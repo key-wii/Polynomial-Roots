@@ -1,1 +1,1 @@
-2.31085 28 Algorithm has converged after 28 iterations!
+1.6311 27 Algorithm has converged after 27 iterations!

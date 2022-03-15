@@ -53,7 +53,7 @@ void printPolonomial() {
 }
 
 float f(float x) {
-    return x*x*x - x*x + polynomial[n];
+    return x*x*x + x*x + polynomial[n];
 }
 
 void writeSol(float root, int iterations, string outcome) {
