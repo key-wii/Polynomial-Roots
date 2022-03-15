@@ -49,44 +49,86 @@ void printPolonomial() {
                 cout << "x^" << n - i;
         }
     }
-    cout << "\n\n";
+    cout << "\n";
 }
 
-/*function Bisection(f : float -> float, a : float, b : float, maxIter : int, eps : float)
-  fa := call f(a)
-  fb := call f(b)
+float f(float x) {
+    return x*x*x - x*x + polynomial[n];
+}
 
-  if fa * fb >= 0 then
-    print "Inadequate values for a and b."
-    return -1.0
-  end if
+void writeSol(float root, int iterations, string outcome) {
+    ofstream outfile;
+    string file = filename.erase(filename.find(".pol"));
+    outfile.open(file + ".sol");
 
-  error := b - a
+    outfile << root << " " << iterations << " " << outcome;
+    outfile.close();
+}
 
-  for it <- 1 to maxIter
-    error := error / 2
-    c := a + error
-    fc := call f(c)
+void Bisection(float a, float b, int maxIter, float eps) {
+    float fa = f(a);
+    float fb = f(b);
 
-    if |error| < eps or fc = 0 then
-      print "Algorithm has converged after #{it} iterations!"
-      return c
-    end if
+    if (fa * fb >= 0) {
+        cout << "Inadequate values for a and b.\n";
+        return;
+    }
 
-    if fa * fc < 0 then
-      b := c
-      fb := fc
-    else
-      a := c
-      fa := fc
-    end if
+    float error = b - a;
+    float c = 0;
 
-  end for
+    for (int it = 1; it <= maxIter; it++) {
+        error = error / 2;
+        c = a + error;
+        float fc = f(c);
 
+        if (abs(error) < eps || fc == 0) {
+            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
+            cout << outcome << "\n";
+            writeSol(c, it, outcome);
+            return;
+        }
 
-  print "Max iterations reached without convergence..."
-  return c
-end function*/
+        if (fa * fc  < 0) {
+            b = c;
+            fb = fc;
+        } else {
+            a = c;
+            fa = fc;
+        }
+    }
+
+    string outcome = "Max iterations reached without convergence...";
+    cout << outcome << "\n";
+    writeSol(c, maxIter, outcome);
+    return;
+}
+
+/*void Newton(/*derF : float -> float, *//*float x, int maxIter, float eps, float delta) {
+    float fx = f(x);
+
+    for (int it = 1; it <= maxIter; it++) {
+        //float fd = derF(x);
+        float fd = 1;
+
+        if (abs(fd) < delta) {
+            cout << "Small slope!";
+            return x;
+        }
+
+        float d = fx / fd;
+        x = x - d;
+        fx = f(x);
+
+        if (abs(d) < eps) {
+            cout << "Algorithm has converged after #{it} iterations!"
+            return x;
+        }
+
+    }
+    cout << "Max iterations reached without convergence...";
+    return x;
+}*/
 
 int main()
 {
@@ -96,6 +138,7 @@ int main()
 
     readFile();
     printPolonomial();
+    Bisection(-10, 10, 1000, pow(2, -23));
 
     return 0;
 }
