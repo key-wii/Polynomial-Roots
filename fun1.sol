@@ -1,1 +1,1 @@
-1.6311 27 Algorithm has converged after 27 iterations!
+-0.751518 10 Maximum number of iterations reached!

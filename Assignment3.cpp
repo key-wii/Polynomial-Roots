@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <cmath>
 using namespace std;
 
 int n;
@@ -60,6 +61,14 @@ float f(float x) {
     return sum + polynomial[n];
 }
 
+float derF(float x) {
+    float sum = 0;
+    for (int i = 0; i < n; i++) {
+        if (polynomial[i] != 0) sum += (n - i) * pow(x, n - i - 1);
+    }
+    return sum;
+}
+
 void writeSol(float root, int iterations, string outcome) {
     ofstream outfile;
     string file = filename.erase(filename.find(".pol"));
@@ -108,16 +117,18 @@ void Bisection(float a, float b, int maxIter, float eps) {
     return;
 }
 
-/*void Newton(/*derF : float -> float, *//*float x, int maxIter, float eps, float delta) {
+void Newton(float x, int maxIter, float eps, float delta) {
     float fx = f(x);
 
     for (int it = 1; it <= maxIter; it++) {
-        //float fd = derF(x);
-        float fd = 1;
+        float fd = derF(x);
+        fd = 1;
 
         if (abs(fd) < delta) {
-            cout << "Small slope!";
-            return x;
+            string outcome = "Small slope!";
+            cout << outcome << "\n";
+            writeSol(x, it, outcome);
+            return;
         }
 
         float d = fx / fd;
@@ -125,14 +136,55 @@ void Bisection(float a, float b, int maxIter, float eps) {
         fx = f(x);
 
         if (abs(d) < eps) {
-            cout << "Algorithm has converged after #{it} iterations!"
-            return x;
+            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
+            cout << outcome << "\n";
+            writeSol(x, it, outcome);
+            return;
         }
 
     }
-    cout << "Max iterations reached without convergence...";
-    return x;
-}*/
+    string outcome = "Max iterations reached without convergence...";
+    cout << outcome << "\n";
+    writeSol(x, maxIter, outcome);
+    return;
+}
+
+void Secant(float a, float b, int maxIter, float eps) {
+    float fa = f(a);
+    float fb = f(b);
+
+    if (abs(fa) > abs(fb)) {
+        swap(a, b);
+        swap(fa, fb);
+    }
+
+    for (int it = 1; it <= maxIter; it++) {
+        if  (abs(fa) > abs(fb)) {
+            swap(a, b);
+            swap(fa, fb);
+        }
+
+        float d = (b - a) / (fb - fa);
+        b = a;
+        fb = fa;
+        d = d * fa;
+
+        if  (abs(d) < eps) {
+            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
+            cout << outcome << "\n";
+            writeSol(a, it, outcome);
+            return;
+        }
+
+        a = a - d;
+        fa = f(a);
+    }
+
+    string outcome =  "Maximum number of iterations reached!";
+    cout << outcome << "\n";
+    writeSol(a, maxIter, outcome);
+    return;
+}
 
 int main()
 {
@@ -142,7 +194,9 @@ int main()
 
     readFile();
     printPolonomial();
-    Bisection(-10, 10, 1000, pow(2, -23));
+    //Bisection(-10.0, 10.0, 10, pow(2, -23));
+    //Newton(10.0, 10, pow(2, -23), 0.00001);
+    Secant(-10.0, 10.0, 10, pow(2, -23));
 
     return 0;
 }
