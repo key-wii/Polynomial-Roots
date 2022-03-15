@@ -53,7 +53,11 @@ void printPolonomial() {
 }
 
 float f(float x) {
-    return x*x*x + x*x + polynomial[n];
+    float sum = 0;
+    for (int i = 0; i < n; i++) {
+        if (polynomial[i] != 0) sum += pow(x, n - i);
+    }
+    return sum + polynomial[n];
 }
 
 void writeSol(float root, int iterations, string outcome) {
