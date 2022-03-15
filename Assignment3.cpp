@@ -101,7 +101,6 @@ void Bisection(float a, float b, int maxIter, float eps) {
             writeSol(c, it, outcome);
             return;
         }
-
         if (fa * fc  < 0) {
             b = c;
             fb = fc;
@@ -141,7 +140,6 @@ void Newton(float x, int maxIter, float eps, float delta) {
             writeSol(x, it, outcome);
             return;
         }
-
     }
     string outcome = "Max iterations reached without convergence...";
     cout << outcome << "\n";
@@ -175,7 +173,6 @@ void Secant(float a, float b, int maxIter, float eps) {
             writeSol(a, it, outcome);
             return;
         }
-
         a = a - d;
         fa = f(a);
     }
@@ -183,6 +180,69 @@ void Secant(float a, float b, int maxIter, float eps) {
     string outcome =  "Maximum number of iterations reached!";
     cout << outcome << "\n";
     writeSol(a, maxIter, outcome);
+    return;
+}
+
+void Hybrid(float a, float b, float x, int maxIter, float eps, float delta) {
+    float fa = f(a);
+    float fb = f(b);
+
+    if (fa * fb >= 0) {
+        cout << "Inadequate values for a and b.\n";
+        return;
+    }
+
+    float error = b - a;
+    float c = 0;
+
+    for (int it = 1; it <= maxIter / 2; it++) {
+        error = error / 2;
+        c = a + error;
+        float fc = f(c);
+
+        if (abs(error) < eps || fc == 0) {
+            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
+            cout << outcome << "\n";
+            writeSol(c, it, outcome);
+            return;
+        }
+
+        if (fa * fc  < 0) {
+            b = c;
+            fb = fc;
+        } else {
+            a = c;
+            fa = fc;
+        }
+    }
+
+    float fx = f(x);
+
+    for (int it = maxIter / 2; it <= maxIter; it++) {
+        float fd = derF(x);
+        fd = 1;
+
+        if (abs(fd) < delta) {
+            string outcome = "Small slope!";
+            cout << outcome << "\n";
+            writeSol(x, it, outcome);
+            return;
+        }
+
+        float d = fx / fd;
+        x = x - d;
+        fx = f(x);
+
+        if (abs(d) < eps) {
+            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
+            cout << outcome << "\n";
+            writeSol(x, it, outcome);
+            return;
+        }
+    }
+    string outcome = "Max iterations reached without convergence...";
+    cout << outcome << "\n";
+    writeSol(x, maxIter, outcome);
     return;
 }
 
@@ -196,7 +256,8 @@ int main()
     printPolonomial();
     //Bisection(-10.0, 10.0, 10, pow(2, -23));
     //Newton(10.0, 10, pow(2, -23), 0.00001);
-    Secant(-10.0, 10.0, 10, pow(2, -23));
+    //Secant(-10.0, 10.0, 10, pow(2, -23));
+    Hybrid(-10.0, 10.0, 10.0, 10, pow(2, -23), 0.00001);
 
     return 0;
 }
