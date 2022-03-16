@@ -246,18 +246,94 @@ void Hybrid(float a, float b, float x, int maxIter, float eps, float delta) {
     return;
 }
 
+bool parseInput() {
+    int point1;
+    int point2;
+    int maxIter = 10000;
+    string line;
+
+    while (0 == 0) {
+        getline (cin, line);
+        if (line == "") return false;
+
+        int _pos = line.find("-maxIter");
+        if (_pos != string::npos) { //optionally set max iterations
+            string temp = line.substr(_pos, line.length());
+            int _pos2 = temp.find(" ");
+            temp.erase(0, _pos2 + 1);
+            int _pos3 = _pos2 = temp.find(" ");
+            string maxIterStr = temp.substr(0, _pos3);
+            maxIter = stoi(maxIterStr); //set maxIter
+
+            line.erase(_pos, 8 + maxIterStr.length() + 2); //remove command out of the way for next commands
+            //          8 is length of "-maxIter"   2 for removing 2 spaces
+        } 
+        
+        _pos = line.find(" ");
+        if (_pos != string::npos) {
+            if (line.substr(0, _pos) == "-newt") { //run Netwon's method
+                line.erase(0, _pos + 1);
+                _pos = line.find(" ");
+                point1 = stoi(line.substr(0, _pos)); //set initial point
+
+                filename = line.substr(_pos + 1, line.length());
+                readFile();
+
+                Newton(point1, maxIter, pow(2, -23), 0.00001);
+                return true;
+            }
+            else if (line.substr(0, _pos) == "-sec") { //run Secant method
+                line.erase(0, _pos + 1);
+                _pos = line.find(" ");
+                point1 = stoi(line.substr(0, _pos)); //set first initial point
+                line.erase(0, _pos + 1);
+                _pos = line.find(" ");
+                point2 = stoi(line.substr(0, _pos)); //set second initial point
+
+                filename = line.substr(_pos + 1, line.length());
+                readFile();
+                
+                Secant(point1, point2, maxIter, pow(2, -23));
+                return true;
+            }
+            else if (line.substr(0, _pos) == "-hybrid") { //run Hybrid method
+                line.erase(0, _pos + 1);
+                _pos = line.find(" ");
+                point1 = stoi(line.substr(0, _pos)); //set first initial point
+                line.erase(0, _pos + 1);
+                _pos = line.find(" ");
+                point2 = stoi(line.substr(0, _pos)); //set second initial point
+
+                filename = line.substr(_pos + 1, line.length());
+                readFile();
+                
+                Hybrid(point1, point2, point1, maxIter, pow(2, -23), 0.00001);
+                return true;
+            }
+            else { //run Bisection method
+                point1 = stoi(line.substr(0, _pos)); //set first initial point
+                line.erase(0, _pos + 1);
+                _pos = line.find(" ");
+                point2 = stoi(line.substr(0, _pos)); //set second initial point
+
+                filename = line.substr(_pos + 1, line.length());
+                readFile();
+                
+                Bisection(point1, point2, maxIter, pow(2, -23));
+                return true;
+            }
+        }
+        cout << "Input Error. Try again.\n";
+    }
+
+}
+
 int main()
 {
-    /*cout << "> polRoot ";
-    cin >> filename;*/
-    filename = "fun1.pol";
-
-    readFile();
-    printPolonomial();
-    //Bisection(-10.0, 10.0, 10, pow(2, -23));
-    //Newton(10.0, 10, pow(2, -23), 0.00001);
-    //Secant(-10.0, 10.0, 10, pow(2, -23));
-    Hybrid(-10.0, 10.0, 10.0, 10, pow(2, -23), 0.00001);
-
+    cout << "Input nothing to exit\n\n";
+    while (0 == 0) {
+        cout << "> polRoot ";
+        if (!parseInput()) exit(0);
+    }
     return 0;
 }
