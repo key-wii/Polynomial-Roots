@@ -96,8 +96,8 @@ void Bisection(float a, float b, int maxIter, float eps) {
         float fc = f(c);
 
         if (abs(error) < eps || fc == 0) {
-            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
-            cout << outcome << "\n";
+            string outcome = "success";
+            cout << "Algorithm has converged after " + to_string(it) + " iterations!\n";
             writeSol(c, it, outcome);
             return;
         }
@@ -109,9 +109,8 @@ void Bisection(float a, float b, int maxIter, float eps) {
             fa = fc;
         }
     }
-
-    string outcome = "Max iterations reached without convergence...";
-    cout << outcome << "\n";
+    string outcome = "fail";
+    cout << "Max iterations reached without convergence...\n";
     writeSol(c, maxIter, outcome);
     return;
 }
@@ -124,8 +123,8 @@ void Newton(float x, int maxIter, float eps, float delta) {
         fd = 1;
 
         if (abs(fd) < delta) {
-            string outcome = "Small slope!";
-            cout << outcome << "\n";
+            string outcome = "fail";
+            cout << "Small slope!\n";
             writeSol(x, it, outcome);
             return;
         }
@@ -135,14 +134,14 @@ void Newton(float x, int maxIter, float eps, float delta) {
         fx = f(x);
 
         if (abs(d) < eps) {
-            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
-            cout << outcome << "\n";
+            string outcome = "success";
+            cout << "Algorithm has converged after " + to_string(it) + " iterations!\n";
             writeSol(x, it, outcome);
             return;
         }
     }
-    string outcome = "Max iterations reached without convergence...";
-    cout << outcome << "\n";
+    string outcome = "fail";
+    cout << "Max iterations reached without convergence...\n";
     writeSol(x, maxIter, outcome);
     return;
 }
@@ -168,17 +167,16 @@ void Secant(float a, float b, int maxIter, float eps) {
         d = d * fa;
 
         if  (abs(d) < eps) {
-            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
-            cout << outcome << "\n";
+            string outcome = "success";
+            cout << "Algorithm has converged after " + to_string(it) + " iterations!\n";
             writeSol(a, it, outcome);
             return;
         }
         a = a - d;
         fa = f(a);
     }
-
-    string outcome =  "Maximum number of iterations reached!";
-    cout << outcome << "\n";
+    string outcome = "fail";
+    cout << "Max iterations reached without convergence...\n";
     writeSol(a, maxIter, outcome);
     return;
 }
@@ -201,8 +199,8 @@ void Hybrid(float a, float b, float x, int maxIter, float eps, float delta) {
         float fc = f(c);
 
         if (abs(error) < eps || fc == 0) {
-            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
-            cout << outcome << "\n";
+            string outcome = "success";
+            cout << "Algorithm has converged after " + to_string(it) + " iterations!\n";
             writeSol(c, it, outcome);
             return;
         }
@@ -223,8 +221,8 @@ void Hybrid(float a, float b, float x, int maxIter, float eps, float delta) {
         fd = 1;
 
         if (abs(fd) < delta) {
-            string outcome = "Small slope!";
-            cout << outcome << "\n";
+            string outcome = "fail";
+            cout << "Small slope!\n";
             writeSol(x, it, outcome);
             return;
         }
@@ -234,14 +232,14 @@ void Hybrid(float a, float b, float x, int maxIter, float eps, float delta) {
         fx = f(x);
 
         if (abs(d) < eps) {
-            string outcome = "Algorithm has converged after " + to_string(it) + " iterations!";
-            cout << outcome << "\n";
+            string outcome = "success";
+            cout << "Algorithm has converged after " + to_string(it) + " iterations!\n";
             writeSol(x, it, outcome);
             return;
         }
     }
-    string outcome = "Max iterations reached without convergence...";
-    cout << outcome << "\n";
+    string outcome = "fail";
+    cout << "Max iterations reached without convergence...\n";
     writeSol(x, maxIter, outcome);
     return;
 }
