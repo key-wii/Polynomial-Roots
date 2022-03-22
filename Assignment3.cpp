@@ -56,7 +56,7 @@ void printPolonomial() {
 float f(float x) {
     float sum = 0;
     for (int i = 0; i < n; i++) {
-        if (polynomial[i] != 0) sum += pow(x, n - i);
+        if (polynomial[i] != 0) sum += polynomial[i] * pow(x, n - i);
     }
     return sum + polynomial[n];
 }
@@ -78,7 +78,7 @@ void writeSol(float root, int iterations, string outcome) {
     outfile.close();
 }
 
-void Bisection(float a, float b, int maxIter, float eps) {
+void Bisection(float a, float b, int maxIt, float eps) {
     float fa = f(a);
     float fb = f(b);
 
@@ -90,9 +90,9 @@ void Bisection(float a, float b, int maxIter, float eps) {
     float error = b - a;
     float c = 0;
 
-    for (int it = 1; it <= maxIter; it++) {
-        error = error / 2;
-        c = a + error;
+    for (int it = 1; it <= maxIt; it++) {
+        error = b - a;
+        c = (a + b) / 2;
         float fc = f(c);
 
         if (abs(error) < eps || fc == 0) {
@@ -111,14 +111,14 @@ void Bisection(float a, float b, int maxIter, float eps) {
     }
     string outcome = "fail";
     cout << "Max iterations reached without convergence...\n";
-    writeSol(c, maxIter, outcome);
+    writeSol(c, maxIt, outcome);
     return;
 }
 
-void Newton(float x, int maxIter, float eps, float delta) {
+void Newton(float x, int maxIt, float eps, float delta) {
     float fx = f(x);
 
-    for (int it = 1; it <= maxIter; it++) {
+    for (int it = 1; it <= maxIt; it++) {
         float fd = derF(x);
         fd = 1;
 
@@ -142,11 +142,11 @@ void Newton(float x, int maxIter, float eps, float delta) {
     }
     string outcome = "fail";
     cout << "Max iterations reached without convergence...\n";
-    writeSol(x, maxIter, outcome);
+    writeSol(x, maxIt, outcome);
     return;
 }
 
-void Secant(float a, float b, int maxIter, float eps) {
+void Secant(float a, float b, int maxIt, float eps) {
     float fa = f(a);
     float fb = f(b);
 
@@ -155,7 +155,7 @@ void Secant(float a, float b, int maxIter, float eps) {
         swap(fa, fb);
     }
 
-    for (int it = 1; it <= maxIter; it++) {
+    for (int it = 1; it <= maxIt; it++) {
         if  (abs(fa) > abs(fb)) {
             swap(a, b);
             swap(fa, fb);
@@ -177,11 +177,11 @@ void Secant(float a, float b, int maxIter, float eps) {
     }
     string outcome = "fail";
     cout << "Max iterations reached without convergence...\n";
-    writeSol(a, maxIter, outcome);
+    writeSol(a, maxIt, outcome);
     return;
 }
 
-void Hybrid(float a, float b, float x, int maxIter, float eps, float delta) {
+void Hybrid(float a, float b, float x, int maxIt, float eps, float delta) {
     float fa = f(a);
     float fb = f(b);
 
@@ -193,7 +193,7 @@ void Hybrid(float a, float b, float x, int maxIter, float eps, float delta) {
     float error = b - a;
     float c = 0;
 
-    for (int it = 1; it <= maxIter / 2; it++) {
+    for (int it = 1; it <= maxIt / 2; it++) {
         error = error / 2;
         c = a + error;
         float fc = f(c);
@@ -216,7 +216,7 @@ void Hybrid(float a, float b, float x, int maxIter, float eps, float delta) {
 
     float fx = f(x);
 
-    for (int it = maxIter / 2; it <= maxIter; it++) {
+    for (int it = maxIt / 2; it <= maxIt; it++) {
         float fd = derF(x);
         fd = 1;
 
@@ -240,32 +240,32 @@ void Hybrid(float a, float b, float x, int maxIter, float eps, float delta) {
     }
     string outcome = "fail";
     cout << "Max iterations reached without convergence...\n";
-    writeSol(x, maxIter, outcome);
+    writeSol(x, maxIt, outcome);
     return;
 }
 
 bool parseInput() {
     int point1;
     int point2;
-    int maxIter = 10000;
+    int maxIt = 10000;
     string line;
 
     while (0 == 0) {
         getline (cin, line);
         if (line == "") return false;
 
-        int _pos = line.find("-maxIter");
+        int _pos = line.find("-maxIt");
         if (_pos != string::npos) { //optionally set max iterations
             string temp = line.substr(_pos, line.length());
             int _pos2 = temp.find(" ");
             temp.erase(0, _pos2 + 1);
             int _pos3 = _pos2 = temp.find(" ");
-            string maxIterStr = temp.substr(0, _pos3);
-            maxIter = stoi(maxIterStr); //set maxIter
+            string maxItStr = temp.substr(0, _pos3);
+            maxIt = stoi(maxItStr); //set maxIt
 
-            line.erase(_pos, 8 + maxIterStr.length() + 2); //remove command out of the way for next commands
-            //          8 is length of "-maxIter"   2 for removing 2 spaces
-        } 
+            line.erase(_pos, 6 + maxItStr.length() + 2); //remove command out of the way for next commands
+            //          6 is length of "-maxIt"   2 for removing 2 spaces
+        }
         
         _pos = line.find(" ");
         if (_pos != string::npos) {
@@ -277,7 +277,7 @@ bool parseInput() {
                 filename = line.substr(_pos + 1, line.length());
                 readFile();
 
-                Newton(point1, maxIter, pow(2, -23), 0.00001);
+                Newton(point1, maxIt, pow(2, -23), 0.00001);
                 return true;
             }
             else if (line.substr(0, _pos) == "-sec") { //run Secant method
@@ -291,7 +291,7 @@ bool parseInput() {
                 filename = line.substr(_pos + 1, line.length());
                 readFile();
                 
-                Secant(point1, point2, maxIter, pow(2, -23));
+                Secant(point1, point2, maxIt, pow(2, -23));
                 return true;
             }
             else if (line.substr(0, _pos) == "-hybrid") { //run Hybrid method
@@ -305,7 +305,7 @@ bool parseInput() {
                 filename = line.substr(_pos + 1, line.length());
                 readFile();
                 
-                Hybrid(point1, point2, point1, maxIter, pow(2, -23), 0.00001);
+                Hybrid(point1, point2, point1, maxIt, pow(2, -23), 0.00001);
                 return true;
             }
             else { //run Bisection method
@@ -317,7 +317,7 @@ bool parseInput() {
                 filename = line.substr(_pos + 1, line.length());
                 readFile();
                 
-                Bisection(point1, point2, maxIter, pow(2, -23));
+                Bisection(point1, point2, maxIt, pow(2, -23));
                 return true;
             }
         }
