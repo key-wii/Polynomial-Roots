@@ -1,1 +1,1 @@
-0.94518 23 success
+0.94518 6 success
